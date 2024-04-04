@@ -140,6 +140,7 @@ public class Queue<Item> implements Iterable<Item> {
     }
 
     // an iterator, doesn't implement remove() since it's optional
+    @SuppressWarnings("hiding")
     private class ListIterator<Item> implements Iterator<Item> {
         private Node<Item> current;
 
@@ -177,8 +178,11 @@ public class Queue<Item> implements Iterable<Item> {
     }
 
     public void add(int source) {
-      // TODO Auto-generated method stub
       throw new UnsupportedOperationException("Unimplemented method 'add'");
+    }
+
+    public int poll() {
+      throw new UnsupportedOperationException("Unimplemented method 'poll'");
     }
 }
 

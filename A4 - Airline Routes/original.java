@@ -1,16 +1,16 @@
 import java.util.*;
 import java.io.*;
 
-public class AirlineSystem implements AirlineInterface {
-  private String[] cityNames; // Holds the name of each city in the input file
-  private Digraph G;          // Graph object containing city vertices as well as edge's source city, destination city, price, and distance
+public class original implements AirlineInterface {
+  private String[] cityNames;
+  private Digraph G;
 
   public boolean loadRoutes(String fileName) {
     try {
       // Read the file
       BufferedReader bf = new BufferedReader(new FileReader(fileName));
 
-      // Map each city to a designated index
+      // Map at each city to a designated index
       int numCities = Integer.parseInt(bf.readLine()); // Get the total amount of cities in the graph
       cityNames = new String[numCities];
       for (int i = 0; i < numCities; i++) {
@@ -41,8 +41,7 @@ public class AirlineSystem implements AirlineInterface {
       // No issues occured
       bf.close();
       return true;
-    }
-    catch (IOException e) {
+    } catch (IOException e) {
       // Some error occured
       e.printStackTrace();
     }
@@ -63,8 +62,9 @@ public class AirlineSystem implements AirlineInterface {
 
     // Find the passed-in city, or throw exception if it's unknown
     int cityIndex = findCityIndex(city);
-    if (cityIndex == -1) throw new CityNotFoundException(city);
-    
+    if (cityIndex == -1)
+      throw new CityNotFoundException(city);
+
     // Add each flight from the passed-in city
     for (DirectedEdge edge : G.adj[cityIndex]) {
       flights.add(new Route(cityNames[edge.from()], cityNames[edge.to()], edge.distance(), edge.price()));
@@ -79,7 +79,8 @@ public class AirlineSystem implements AirlineInterface {
     // Find the passed-in cities, or throw exception if they're unknown
     int sourceIndex = findCityIndex(source);
     int destinationIndex = findCityIndex(destination);
-    if (sourceIndex == -1 || destinationIndex == -1) throw new CityNotFoundException(source + " " + destination);
+    if (sourceIndex == -1 || destinationIndex == -1)
+      throw new CityNotFoundException(source + " " + destination);
 
     // Find the shortest path using Breadth-First Search
     G.bfs(sourceIndex);
@@ -88,7 +89,7 @@ public class AirlineSystem implements AirlineInterface {
     for (DirectedEdge edge : G.adj[destinationIndex]) {
       // Check each edge coming from the destination vertex
       if (G.hops[destinationIndex] - G.hops[edge.to()] == 1) {
-        // Neighbor vertex will be 1 less hop from the source - it's a shortest route
+        // Neighbor vertex will be 1 less hop from the source; so it's a shortest route
         ArrayList<String> path = new ArrayList<>();
 
         // Add the destination vertex to the path and move to the neighbor
@@ -100,21 +101,23 @@ public class AirlineSystem implements AirlineInterface {
           v = G.edgeTo[v];
         }
         // Add the source vertex to the path and add the path to the Set
-        path.add(0, source); 
+        path.add(0, source);
         fewestStopsPath.add(path);
       }
     }
-
     return fewestStopsPath;
   }
 
-  public Set<ArrayList<Route>> shortestDistanceItinerary(String source, String destination) throws CityNotFoundException {
+  public Set<ArrayList<Route>> shortestDistanceItinerary(String source, String destination)
+      throws CityNotFoundException {
     Set<ArrayList<Route>> shortestDistancePaths = new HashSet<>();
 
     // Find the passed-in cities, or throw exception if they're unknown
     int sourceIndex = findCityIndex(source);
     int destinationIndex = findCityIndex(destination);
-    if (sourceIndex == -1 || destinationIndex == -1) throw new CityNotFoundException(source + " " + destination);
+    if (sourceIndex == -1 || destinationIndex == -1)
+      throw new CityNotFoundException(
+          source + " " + destination);
 
     // Find the shortest path based on distance
     G.dijkstras(sourceIndex, destinationIndex);
@@ -134,11 +137,11 @@ public class AirlineSystem implements AirlineInterface {
     // Find the passed-in cities, or throw an exception if they're unknown
     int sourceIndex = findCityIndex(source);
     int destinationIndex = findCityIndex(destination);
-    if (sourceIndex == -1 || destinationIndex == -1) throw new CityNotFoundException(source + " " + destination);
+    if (sourceIndex == -1 || destinationIndex == -1)
+      throw new CityNotFoundException(source + " " + destination);
 
     // Find the cheapest path
     G.dijkstrasPrice(sourceIndex, destinationIndex);
-
 
     // Traverse all edges and find paths with the same minimum cost
     double cheapestPrice = G.price[destinationIndex];
@@ -150,14 +153,16 @@ public class AirlineSystem implements AirlineInterface {
     return cheapestPaths;
   }
 
-  public Set<ArrayList<Route>> cheapestItinerary(String source, String transit, String destination) throws CityNotFoundException {
+  public Set<ArrayList<Route>> cheapestItinerary(String source, String transit, String destination)
+      throws CityNotFoundException {
     Set<ArrayList<Route>> cheapestPaths = new HashSet<>();
 
     // Make sure all cities exist, or throw an error if any of them are unknown
     int sourceIndex = findCityIndex(source);
     int transitIndex = findCityIndex(transit);
-    int destinationIndex = findCityIndex(destination); 
-    if (sourceIndex == -1 || transitIndex == -1 || destinationIndex == -1) throw new CityNotFoundException(source + " " + transit + " " + destination);
+    int destinationIndex = findCityIndex(destination);
+    if (sourceIndex == -1 || transitIndex == -1 || destinationIndex == -1)
+      throw new CityNotFoundException(source + " " + transit + " " + destination);
 
     // Get price of source -> transit
     G.dijkstrasPrice(sourceIndex, transitIndex);
@@ -167,7 +172,8 @@ public class AirlineSystem implements AirlineInterface {
     G.dijkstrasPrice(transitIndex, destinationIndex);
     double fromTransitPrice = G.price[destinationIndex];
 
-    // Sets to hold all possible paths from source -> transit -> destination with cheapest price
+    // Sets to hold all possible paths from source -> transit -> destination with
+    // cheapest price
     Set<ArrayList<Route>> sourceToTransitPaths = new HashSet<>();
     Set<ArrayList<Route>> transitToDestinationPaths = new HashSet<>();
 
@@ -243,7 +249,8 @@ public class AirlineSystem implements AirlineInterface {
 
         // Convert edges to routes and add the MST to the set of MSTs
         for (DirectedEdge edge : mstEdges) {
-          minimumSpanningTree.add(new Route(cityNames[edge.from()], cityNames[edge.to()], edge.distance(), edge.price()));
+          minimumSpanningTree
+              .add(new Route(cityNames[edge.from()], cityNames[edge.to()], edge.distance(), edge.price()));
         }
         minimumSpanningTrees.add(minimumSpanningTree);
       }
@@ -256,9 +263,11 @@ public class AirlineSystem implements AirlineInterface {
 
     // Find the city index, or throw an exception if it's unknown
     int sourceIndex = findCityIndex(city);
-    if (sourceIndex == -1) throw new CityNotFoundException(city);
+    if (sourceIndex == -1)
+      throw new CityNotFoundException(city);
 
-    // Initialize the current path price, and set the source city as visited to start
+    // Initialize the current path price, and set the source city as visited to
+    // start
     double pathPrice = 0;
     boolean[] visited = new boolean[G.v];
     visited[sourceIndex] = true;
@@ -272,6 +281,38 @@ public class AirlineSystem implements AirlineInterface {
     return validPaths;
   }
 
+  private void tripsWithinRecursive(int currentVertex, double budget, double pathPrice, boolean[] visited,
+      ArrayList<Route> currentPath, Set<ArrayList<Route>> validPaths) {
+    // Check all flights from the current vertex
+    for (DirectedEdge edge : G.adj[currentVertex]) {
+      // If the city hasn't been visited and the cost is within the budget
+      if (!visited[edge.to()] && pathPrice + edge.price() <= budget) {
+        // City hasn't been visited and this edge is under the budget
+
+        // mark the city as visited, and update current path price
+        visited[edge.to()] = true;
+        pathPrice += edge.price();
+
+        // Add the flight to the current path
+        currentPath.add(new Route(cityNames[currentVertex], cityNames[edge.to()], edge.distance(), edge.price()));
+
+        // Recursively call to explore additional flights
+        tripsWithinRecursive(edge.to(), budget, pathPrice, visited, currentPath, validPaths);
+
+        // Backtrack: Remove the flight and update the path, city visitation, and cost
+        visited[edge.to()] = false;
+        pathPrice -= edge.price();
+        currentPath.remove(currentPath.size() - 1);
+      }
+    }
+
+    // Add the current path to the set of valid paths
+    if (!currentPath.isEmpty()) {
+      validPaths.add(new ArrayList<>(currentPath));
+    }
+  }
+
+  @Override
   public Set<ArrayList<Route>> tripsWithin(double budget) {
     Set<ArrayList<Route>> validPaths = new HashSet<>();
 
@@ -296,6 +337,7 @@ public class AirlineSystem implements AirlineInterface {
 
   /**
    * Finds the index of city in the cityNames array.
+   * 
    * @param city the desired city to find.
    * @return the index of the city, or -1 if it's not found.
    */
@@ -337,7 +379,8 @@ public class AirlineSystem implements AirlineInterface {
       // Iterate through the stack to create Route objects and add them to the path
       for (int v : stack) {
         if (prev != -1) {
-          path.add(new Route(cityNames[prev], cityNames[v], G.distance[v] - G.distance[prev], G.price[v] - G.price[prev]));
+          path.add(
+              new Route(cityNames[prev], cityNames[v], G.distance[v] - G.distance[prev], G.price[v] - G.price[prev]));
         }
         prev = v;
       }
@@ -359,7 +402,7 @@ public class AirlineSystem implements AirlineInterface {
   }
 
   /**
-   * Recursively finds all the cheapest paths between the source and the 
+   * Recursively finds all the cheapest paths between the source and the
    * destinaton based on distance.
    * 
    * @param sourceIndex      Index of the source city.
@@ -372,16 +415,19 @@ public class AirlineSystem implements AirlineInterface {
    * @param visited          Tracks what vertices are in the current path.
    * 
    */
-  private void findAllCheapestPaths(int sourceIndex, int destinationIndex, double cheapestPrice, Deque<Integer> stack, Set<ArrayList<Route>> paths, boolean[] visited) {
+  private void findAllCheapestPaths(int sourceIndex, int destinationIndex, double cheapestPrice, Deque<Integer> stack,
+      Set<ArrayList<Route>> paths, boolean[] visited) {
     if (cheapestPrice == 0 && destinationIndex == sourceIndex) {
-      // We've hit the source vertex, and our total is equal to the cheapest itinerary - add the path
+      // We've hit the source vertex, and our total is equal to the cheapest itinerary
+      // - add the path
       ArrayList<Route> path = new ArrayList<>();
       int prev = -1;
 
       // Iterate through the stack to create Route objects and add them to the path
       for (int v : stack) {
         if (prev != -1) {
-          path.add(new Route(cityNames[prev], cityNames[v], Math.abs(G.distance[v] - G.distance[prev]), Math.abs(G.price[v] - G.price[prev])));
+          path.add(new Route(cityNames[prev], cityNames[v], Math.abs(G.distance[v] - G.distance[prev]),
+              Math.abs(G.price[v] - G.price[prev])));
         }
         prev = v;
       }
@@ -390,15 +436,18 @@ public class AirlineSystem implements AirlineInterface {
       paths.add(path);
       visited[destinationIndex] = false; // Set false for recursive backtracking
     } else {
-      // Haven't finished the path yet - check edge connecting edge to the vertex to see if
+      // Haven't finished the path yet - check edge connecting edge to the vertex to
+      // see if
       // we can possibly go down that path
       for (DirectedEdge edge : G.adj[destinationIndex]) {
         visited[destinationIndex] = true; // mark the current vertex as visited
         int nextVertex = edge.to(); // get a connecting edge
-        if (!visited[edge.to()] && (Math.abs((int) G.price[destinationIndex] - (int) G.price[nextVertex]) <= cheapestPrice)) {
+        if (!visited[edge.to()]
+            && (Math.abs((int) G.price[destinationIndex] - (int) G.price[nextVertex]) <= cheapestPrice)) {
           // This path is cheap enough to go down for now
 
-          // Push the connecting vertex to the stack and recursively find all cheapest paths
+          // Push the connecting vertex to the stack and recursively find all cheapest
+          // paths
           // from that point
           visited[nextVertex] = true;
           stack.push(nextVertex);
@@ -420,48 +469,6 @@ public class AirlineSystem implements AirlineInterface {
   }
 
   /**
-   * Recursively finds each route less than or equal to a given budget.
-   * 
-   * @param currentVertex Source city for each call.
-   * @param budget        User requested budget.
-   * @param pathPrice     The current path price.
-   * @param visited       True for vertices already added to the path;
-   *                      false otherwise.
-   * @param currentPath   The current path of routes.
-   * @param validPaths    Set of all paths less than or equal to budget.
-   * 
-   */
-  private void tripsWithinRecursive(int currentVertex, double budget, double pathPrice, boolean[] visited, ArrayList<Route> currentPath, Set<ArrayList<Route>> validPaths) {
-    // Check all flights from the current vertex
-    for (DirectedEdge edge : G.adj[currentVertex]) {
-      // If the city hasn't been visited and the cost is within the budget
-      if (!visited[edge.to()] && pathPrice + edge.price() <= budget) {
-        // City hasn't been visited and this edge is under the budget
-
-        // mark the city as visited, and update current path price
-        visited[edge.to()] = true;
-        pathPrice += edge.price();
-
-        // Add the flight to the current path
-        currentPath.add(new Route(cityNames[currentVertex], cityNames[edge.to()], edge.distance(), edge.price()));
-
-        // Recursively call to explore additional flights
-        tripsWithinRecursive(edge.to(), budget, pathPrice, visited, currentPath, validPaths);
-
-        // Backtrack: Remove the flight and update the path, city visitation, and cost
-        visited[edge.to()] = false;
-        pathPrice -= edge.price();
-        currentPath.remove(currentPath.size() - 1);
-      }
-    }
-
-    // Add the current path to the set of valid paths
-    if (!currentPath.isEmpty()) {
-      validPaths.add(new ArrayList<>(currentPath));
-    } 
-  }
-
-  /**
    * The <tt>Digraph</tt> class represents an directed graph of vertices
    * named 0 through v-1. It supports the following operations: add an edge to
    * the graph, iterate over all of edges leaving a vertex.Self-loops are
@@ -470,7 +477,6 @@ public class AirlineSystem implements AirlineInterface {
   private class Digraph {
 
     private final int v;
-    @SuppressWarnings("unused")
     private int e;
     private LinkedList<DirectedEdge>[] adj;
     int[] hops;
@@ -520,7 +526,7 @@ public class AirlineSystem implements AirlineInterface {
     }
 
     private void bfs(int source) {
-      LinkedList<Integer> q = new LinkedList<Integer>(); // this works
+      Queue<Integer> q = new Queue<>();
       boolean[] visited = new boolean[v];
       boolean[] seen = new boolean[v];
       int[] parent = new int[v];

@@ -42,7 +42,8 @@ public class AirlineSystemLab {
 	 * filepath to the data file, which can be opened with a file read stream.
 	 */
 	public void readGraph () throws IOException {
-		Scanner inScan = new Scanner(System.in);
+		@SuppressWarnings("resource")
+    Scanner inScan = new Scanner(System.in);
 		System.out.println("Please enter graph filename:");
 		String fileName = inScan.nextLine();
 		Scanner fileScan = new Scanner(new FileInputStream(fileName));
@@ -108,7 +109,8 @@ public class AirlineSystemLab {
 	private class Digraph {
 
 		private final int v;
-		private int e;
+		@SuppressWarnings("unused")
+    private int e;
 		private LinkedList<DirectedEdge>[] adj;
 
 		/**

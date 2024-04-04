@@ -15,7 +15,6 @@ public class LZWmod {
     private static final int W = 12;         // codeword width
 
     public static void compress() {
-      //TODO: Modify TSTmod so that the key is a
       //StringBuilder instead of String
         TSTmod<Integer> st = new TSTmod<Integer>();
         for (int i = 0; i < R; i++)
@@ -31,7 +30,6 @@ public class LZWmod {
         while (!BinaryStdIn.isEmpty()) {
             codeword = st.get(current);
             
-            //TODO: read and append the next char to current
             c = BinaryStdIn.readChar();
             current.append(c);
 
@@ -40,14 +38,12 @@ public class LZWmod {
                 if (code < L)    // Add to symbol table if not full
                     st.put(current, code++);
               
-                //TODO: reset current
                 current = new StringBuilder();
                 //c = BinaryStdIn.readChar();
                 current.append(c);
             }
         }
 
-        //TODO: Write the codeword of whatever remains
         //in current
         codeword = st.get(current);
         BinaryStdOut.write(codeword, W);

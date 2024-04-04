@@ -62,7 +62,6 @@ public class
           result = predecessor(root.right, entry);
           if(result == null){ //couldn't find a predecssor;
                                 //the first right parent (root) is the predecessor
-            //TODO: replace null with the first right parent (root)
             result = root;
           }
         } else { //entry < root; move left
@@ -88,7 +87,6 @@ public class
         int compareResult = root.data.compareTo(entry);
         if(compareResult == 0){ //found the node;
                                 //successor is the smallest in right subtree
-          //TODO: replace null with code to find the smallest in the right subtree
           result = findSmallest(root.right);
         } else if(compareResult < 0){ //entry > root; move right
           result = successor(root.right, entry);
@@ -119,7 +117,6 @@ public class
       BinaryNode<T> result = null;
       if(root != null){
         if(root.left != null){
-          //TODO: replace null with code to find the smallest in the left subtree
           result = findSmallest(root.left);
         } else {
           result = root;
@@ -128,6 +125,7 @@ public class
       return result;
     }
 
+    @SuppressWarnings("hiding")
     private class BinaryNode<T> {
       private T data;
       private BinaryNode<T> left;

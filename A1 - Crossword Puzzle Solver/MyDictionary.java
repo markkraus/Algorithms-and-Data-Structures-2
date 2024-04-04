@@ -43,7 +43,8 @@ public class MyDictionary implements DictInterface
 
 	public int searchPrefix(StringBuilder s, int start, int end)
 	{
-		int status = 0;
+		@SuppressWarnings("unused")
+    int status = 0;
 		boolean doneIn, doneOut, currTest, prefix, word;
 		String curr;
 		doneOut = false;

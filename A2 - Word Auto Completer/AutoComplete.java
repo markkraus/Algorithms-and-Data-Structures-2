@@ -349,6 +349,7 @@
     private int size;
     private boolean isWord;
     private DLBNode nextSibling;
+    @SuppressWarnings("unused")
     private DLBNode previousSibling;
     private DLBNode child;
     private DLBNode parent;
