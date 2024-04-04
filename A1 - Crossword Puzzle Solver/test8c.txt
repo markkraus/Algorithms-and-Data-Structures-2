@@ -1,0 +1,9 @@
+8
+cpa-lens
+++x--+y+
+axe-p+-+
+----+++k
+lens----
+-+y+-cpa
+p+-+-++x
++++k-axe
