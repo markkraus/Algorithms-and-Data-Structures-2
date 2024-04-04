@@ -175,6 +175,11 @@ public class Queue<Item> implements Iterable<Item> {
         }
         StdOut.println("(" + queue.size() + " left on queue)");
     }
+
+    public void add(int source) {
+      // TODO Auto-generated method stub
+      throw new UnsupportedOperationException("Unimplemented method 'add'");
+    }
 }
 
 /******************************************************************************
